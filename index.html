@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYPECraft SMP | Webstore</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06060b;--card:#101018;--accent:#8b5cf6;--accent2:#a78bfa;--gold:#fbbf24;--text:#e8eaf0;--muted:#94a3b8;--success:#22c55e;--pixel-scale:1}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:calc(15px * var(--pixel-scale))}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+.bg-anim{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-anim span{position:absolute;display:block;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.15;animation:fp linear infinite}
+@keyframes fp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.2}90%{opacity:.15}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+.bg-glow{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.12) 0%,transparent 70%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0;animation:gp 8s ease-in-out infinite}
+@keyframes gp{0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}}
+
+.server-bar{position:relative;z-index:50;background:linear-gradient(90deg,#15102a,#241a4a);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;font-size:.85rem;border-bottom:1px solid rgba(139,92,246,.3)}
+.server-info{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.online-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pd 1.5s infinite;flex-shrink:0}
+@keyframes pd{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+.copy-btn{background:var(--accent);border:none;color:#fff;padding:6px 14px;border-radius:7px;cursor:pointer;font-weight:600;font-size:.78rem;transition:.2s}
+.copy-btn:hover{background:var(--accent2)}
+
+.navbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(6,6,11,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(139,92,246,.15);gap:12px;flex-wrap:wrap}
+.logo{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;letter-spacing:1px;white-space:nowrap}
+.logo span{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--muted);font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.icon-btn:hover{background:rgba(139,92,246,.2);color:#fff;border-color:var(--accent)}
+.discord-btn{padding:8px 16px;border-radius:8px;font-weight:600;font-size:.8rem;text-decoration:none;background:#5865F2;color:#fff;transition:.2s;white-space:nowrap}
+.discord-btn:hover{background:#4752c4;transform:translateY(-1px)}
+.signin-pill{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(236,72,153,.12));border:1px solid rgba(139,92,246,.4);padding:6px 14px 6px 7px;border-radius:30px;cursor:pointer;transition:.25s;animation:pg 3s ease-in-out infinite}
+.signin-pill:hover{transform:scale(1.03);box-shadow:0 0 16px rgba(139,92,246,.3)}
+@keyframes pg{0%,100%{box-shadow:0 0 6px rgba(139,92,246,.15)}50%{box-shadow:0 0 14px rgba(139,92,246,.35)}}
+.signin-pill .av{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem}
+.signin-pill .txt{font-size:.8rem;font-weight:600;color:var(--accent2)}
+.signin-pill.logged{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.1);animation:none}
+.signin-pill.logged .txt{color:#4ade80}
+
+.filter-bar{position:relative;z-index:40;padding:16px 20px 8px;display:flex;justify-content:center}
+.filter-scroll{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:1100px;width:100%}
+.filter-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:30px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:.25s;white-space:nowrap}
+.filter-btn:hover{background:rgba(139,92,246,.12);color:#fff;border-color:rgba(139,92,246,.3)}
+.filter-btn.active{background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(124,58,237,.2));color:#fff;border-color:rgba(139,92,246,.5);box-shadow:0 0 18px rgba(139,92,246,.2)}
+.filter-btn .tag{font-size:.6rem;padding:2px 6px;border-radius:8px;font-weight:700}
+.filter-btn .tag.hot{background:rgba(239,68,68,.25);color:#f87171}
+.filter-btn .tag.new{background:rgba(34,197,94,.2);color:#4ade80}
+.filter-btn .tag.ultra{background:rgba(251,191,36,.2);color:#fbbf24}
+
+.page{position:relative;z-index:1;padding:0 20px 40px;max-width:1200px;margin:0 auto}
+.hero{text-align:center;padding:48px 16px 36px}
+.hero .welcome{color:var(--accent2);font-size:.78rem;letter-spacing:3px;margin-bottom:12px;font-weight:500}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;line-height:1.2;margin-bottom:14px}
+.hero h1 span{background:linear-gradient(90deg,var(--accent),#ec4899,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--muted);font-size:.92rem;margin-bottom:24px;line-height:1.6}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-main{padding:11px 26px;border-radius:10px;font-weight:600;font-size:.85rem;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;border:none;text-decoration:none;cursor:pointer;transition:.25s;box-shadow:0 4px 18px rgba(139,92,246,.35);display:inline-block}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(139,92,246,.5)}
+.btn-sec{padding:11px 26px;border-radius:10px;font-weight:600;font-size:.85rem;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.18);text-decoration:none;cursor:pointer;transition:.25s;display:inline-block}
+.btn-sec:hover{border-color:var(--accent);background:rgba(139,92,246,.1)}
+
+.section{margin-top:48px}
+.section.hidden{display:none}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sec-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sec-head h2{font-family:'Orbitron',sans-serif;font-size:1.15rem;font-weight:800}
+.sec-head p{color:var(--muted);font-size:.78rem;margin-top:2px}
+.sec-badge{margin-left:auto;padding:4px 12px;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.starter .sec-icon{background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 0 14px rgba(59,130,246,.35)}
+.starter .sec-badge{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+.mid .sec-icon{background:linear-gradient(135deg,#a855f7,#7c3aed);box-shadow:0 0 14px rgba(168,85,247,.35)}
+.mid .sec-badge{background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.3)}
+.premium .sec-icon{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 0 14px rgba(245,158,11,.35)}
+.premium .sec-badge{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3)}
+.legendary .sec-icon{background:linear-gradient(135deg,#ef4444,#b91c1c);box-shadow:0 0 16px rgba(239,68,68,.4);animation:ip 2s ease-in-out infinite}
+.legendary .sec-badge{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.35)}
+.god .sec-icon{background:conic-gradient(from 0deg,#fbbf24,#ef4444,#8b5cf6,#ec4899,#fbbf24);box-shadow:0 0 18px rgba(251,191,36,.45);animation:sh 4s linear infinite}
+.god .sec-badge{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.4)}
+@keyframes ip{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes sh{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.card{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.06);position:relative;transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-6px);z-index:2}
+.card-top{height:72px;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative}
+.card-top::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,var(--card))}
+.card-body{padding:8px 16px 18px;text-align:center}
+.card-body h3{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:800;margin-bottom:2px}
+.card-body .price{font-size:1.2rem;font-weight:700;color:var(--gold);margin-bottom:10px}
+.card-body .line{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);margin-bottom:10px}
+.card-body ul{list-style:none;text-align:left;margin-bottom:14px;min-height:90px}
+.card-body ul li{padding:3px 0 3px 16px;font-size:.78rem;color:var(--muted);position:relative}
+.card-body ul li::before{content:'✓';position:absolute;left:0;color:var(--success);font-size:.68rem}
+.buy{width:100%;padding:10px;border:none;border-radius:9px;cursor:pointer;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;font-weight:600;font-size:.8rem;transition:.2s}
+.buy:hover{transform:scale(1.03);box-shadow:0 4px 16px rgba(139,92,246,.45)}
+
+.elite .card-top{background:linear-gradient(135deg,#1e3a5f,#2563eb)}
+.elite{animation:br 4s ease-in-out infinite}
+.elite:hover{box-shadow:0 12px 28px rgba(37,99,235,.3);border-color:rgba(37,99,235,.4)}
+.noble .card-top{background:linear-gradient(135deg,#3b0764,#7c3aed)}
+.noble{animation:br 3.5s ease-in-out infinite}
+.noble:hover{box-shadow:0 12px 28px rgba(124,58,237,.3);border-color:rgba(124,58,237,.4)}
+.emperor .card-top{background:linear-gradient(135deg,#78350f,#d97706)}
+.emperor{animation:mg 3s ease-in-out infinite}
+.emperor:hover{box-shadow:0 12px 30px rgba(217,119,6,.35);border-color:rgba(251,191,36,.4)}
+.overlord .card-top{background:linear-gradient(135deg,#7f1d1d,#dc2626)}
+.overlord{animation:sg 2.5s ease-in-out infinite}
+.overlord:hover{box-shadow:0 12px 32px rgba(220,38,38,.4);border-color:rgba(239,68,68,.45)}
+.divine .card-top{background:linear-gradient(135deg,#831843,#db2777)}
+.divine{animation:dn 2s ease-in-out infinite;border-color:rgba(236,72,153,.2)}
+.divine::before{content:'';position:absolute;inset:-2px;background:linear-gradient(45deg,#ec4899,#8b5cf6,#ec4899);background-size:200% 200%;border-radius:16px;z-index:-1;opacity:.4;animation:sf 3s ease infinite}
+.divine:hover{box-shadow:0 16px 40px rgba(236,72,153,.4);transform:translateY(-8px) scale(1.02)}
+.mafia .card-top{background:linear-gradient(135deg,#1c1917,#450a0a)}
+.mafia{animation:th 2.2s ease-in-out infinite;border-color:rgba(220,38,38,.3)}
+.mafia:hover{box-shadow:0 16px 42px rgba(220,38,38,.45);transform:translateY(-8px) scale(1.02)}
+.eternal .card-top{background:linear-gradient(135deg,#422006,#92400e)}
+.eternal{animation:gpw 1.6s ease-in-out infinite;border:1px solid rgba(251,191,36,.35)}
+.eternal::before{content:'';position:absolute;inset:-3px;background:conic-gradient(from 0deg,#fbbf24,#ef4444,#8b5cf6,#ec4899,#22c55e,#fbbf24);border-radius:16px;z-index:-1;animation:sb 2.5s linear infinite;opacity:.65}
+.eternal:hover{box-shadow:0 20px 50px rgba(251,191,36,.4);transform:translateY(-10px) scale(1.03)}
+@keyframes br{0%,100%{box-shadow:0 0 8px rgba(59,130,246,.08)}50%{box-shadow:0 0 16px rgba(59,130,246,.2)}}
+@keyframes mg{0%,100%{box-shadow:0 0 10px rgba(217,119,6,.12)}50%{box-shadow:0 0 20px rgba(217,119,6,.28)}}
+@keyframes sg{0%,100%{box-shadow:0 0 12px rgba(220,38,38,.15)}50%{box-shadow:0 0 26px rgba(220,38,38,.35)}}
+@keyframes dn{0%,100%{box-shadow:0 0 14px rgba(236,72,153,.2);transform:scale(1)}50%{box-shadow:0 0 28px rgba(236,72,153,.4);transform:scale(1.008)}}
+@keyframes th{0%,100%{box-shadow:0 0 14px rgba(220,38,38,.22)}50%{box-shadow:0 0 28px rgba(220,38,38,.4)}}
+@keyframes gpw{0%,100%{box-shadow:0 0 18px rgba(251,191,36,.25);transform:scale(1)}50%{box-shadow:0 0 36px rgba(251,191,36,.45);transform:scale(1.01)}}
+@keyframes sf{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes sb{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+.coin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.coin{background:var(--card);border-radius:12px;padding:18px 12px;text-align:center;border:1px solid rgba(255,255,255,.06);transition:.3s;position:relative;overflow:hidden}
+.coin:hover{transform:translateY(-5px);border-color:var(--gold)}
+.coin .ic{font-size:28px;margin-bottom:6px;display:inline-block;animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.coin h3{font-size:.88rem;margin-bottom:2px}
+.coin .pr{color:var(--gold);font-size:1.1rem;font-weight:700;margin-bottom:10px}
+.coin button{width:100%;padding:8px;border:none;border-radius:8px;cursor:pointer;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:600;font-size:.78rem;transition:.2s}
+.coin button:hover{transform:scale(1.03);box-shadow:0 3px 12px rgba(245,158,11,.35)}
+.coin.hi{animation:mg 3s ease-in-out infinite;border-color:rgba(251,191,36,.15)}
+.coin.ul{animation:sg 2.2s ease-in-out infinite;border-color:rgba(251,191,36,.3)}
+.coin.ul::before{content:'';position:absolute;inset:-2px;background:linear-gradient(45deg,#fbbf24,#f59e0b,#fbbf24);border-radius:14px;z-index:-1;opacity:.3;animation:sf 3s ease infinite}
+
+.key-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px}
+.key{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.06);position:relative;transition:.3s}
+.key:hover{transform:translateY(-6px);z-index:2}
+.key-top{height:64px;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.key-top::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,var(--card))}
+.key-body{padding:4px 12px 16px;text-align:center}
+.key-body h3{font-family:'Orbitron',sans-serif;font-size:.88rem;font-weight:800;margin-bottom:2px}
+.key-body .price{color:var(--gold);font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.key-body .desc{color:var(--muted);font-size:.7rem;margin-bottom:8px}
+.key-rew{background:rgba(0,0,0,.28);border-radius:8px;padding:8px;margin-bottom:10px;text-align:left}
+.key-rew h4{font-size:.66rem;color:var(--accent2);margin-bottom:4px}
+.key-rew ul{list-style:none;font-size:.68rem;color:var(--muted)}
+.key-rew ul li{padding:1px 0 1px 10px;position:relative}
+.key-rew ul li::before{content:'•';position:absolute;left:0;color:var(--accent)}
+.key-buy{width:100%;padding:9px;border:none;border-radius:8px;cursor:pointer;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;font-weight:600;font-size:.78rem;transition:.2s}
+.key-buy:hover{transform:scale(1.03);box-shadow:0 3px 14px rgba(139,92,246,.4)}
+.crimson .key-top{background:linear-gradient(135deg,#450a0a,#b91c1c)}
+.crimson{animation:br 4s ease-in-out infinite}
+.crimson:hover{box-shadow:0 10px 24px rgba(185,28,28,.3);border-color:rgba(239,68,68,.35)}
+.ice .key-top{background:linear-gradient(135deg,#0c4a6e,#0284c7)}
+.ice{animation:br 3.5s ease-in-out infinite}
+.ice:hover{box-shadow:0 10px 24px rgba(2,132,199,.3);border-color:rgba(56,189,248,.35)}
+.golden .key-top{background:linear-gradient(135deg,#713f12,#ca8a04)}
+.golden{animation:mg 3s ease-in-out infinite}
+.golden:hover{box-shadow:0 10px 26px rgba(202,138,4,.3);border-color:rgba(251,191,36,.4)}
+.amethyst .key-top{background:linear-gradient(135deg,#4c1d95,#7e22ce)}
+.amethyst{animation:sg 2.4s ease-in-out infinite}
+.amethyst:hover{box-shadow:0 12px 30px rgba(126,34,206,.35);border-color:rgba(168,85,247,.4)}
+.dark .key-top{background:linear-gradient(135deg,#0a0a0a,#1c1917)}
+.dark{animation:dn 1.9s ease-in-out infinite;border-color:rgba(80,80,80,.35)}
+.dark::before{content:'';position:absolute;inset:-2px;background:linear-gradient(45deg,#222,#111,#333);background-size:200% 200%;border-radius:16px;z-index:-1;opacity:.5;animation:sf 4s ease infinite}
+.dark:hover{box-shadow:0 14px 32px rgba(0,0,0,.6);transform:translateY(-7px) scale(1.02)}
+
+.support{text-align:center;padding:56px 16px 40px;margin-top:40px}
+.support h2{font-family:'Orbitron',sans-serif;font-weight:800;margin-bottom:8px}
+.support p{color:var(--muted);margin-bottom:18px;font-size:.9rem}
+footer{text-align:center;padding:24px 16px 32px;border-top:1px solid rgba(255,255,255,.05);color:var(--muted);font-size:.72rem}
+footer .disc{max-width:560px;margin:10px auto 0;font-size:.66rem;line-height:1.55;opacity:.7}
+
+/* HISTORY SECTION */
+.history-sec{margin-top:48px}
+.history-list{display:flex;flex-direction:column;gap:10px}
+.hist-item{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.hist-item .left h4{font-size:.9rem;font-weight:600;margin-bottom:2px}
+.hist-item .left p{font-size:.72rem;color:var(--muted)}
+.hist-item .right{text-align:right}
+.hist-item .right .amt{color:var(--gold);font-weight:700;font-size:1rem}
+.hist-item .right .st{font-size:.68rem;color:var(--success);margin-top:2px}
+.hist-empty{text-align:center;color:var(--muted);padding:30px;font-size:.85rem}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px}
+.overlay.show{display:flex;animation:fi .2s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.modal{background:#11111a;border-radius:16px;padding:24px;max-width:380px;width:100%;border:1px solid rgba(139,92,246,.28);position:relative;animation:up .28s ease}
+@keyframes up{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal h2{font-family:'Orbitron',sans-serif;font-size:1.1rem;text-align:center;font-weight:800;margin-bottom:4px}
+.modal .sub{text-align:center;color:var(--muted);font-size:.76rem;margin-bottom:16px}
+.x{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer}
+.x:hover{color:#fff}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:4px}
+.fg input{width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:#fff;font-size:.84rem;outline:none}
+.fg input:focus{border-color:var(--accent)}
+.fg input::placeholder{color:#555}
+.mbtn{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;font-weight:600;font-size:.84rem;cursor:pointer;margin-top:4px;transition:.2s}
+.mbtn:hover{transform:scale(1.02);box-shadow:0 4px 16px rgba(139,92,246,.35)}
+.mbtn.sec{background:transparent;border:1px solid rgba(255,255,255,.12);margin-top:8px}
+.mbtn.sec:hover{border-color:var(--accent);background:rgba(139,92,246,.08);box-shadow:none}
+.mbtn.green{background:linear-gradient(135deg,#16a34a,#15803d)}
+.mbtn.green:hover{box-shadow:0 4px 16px rgba(22,163,74,.4)}
+
+.pay-info{text-align:center;margin-bottom:12px}
+.pay-info .nm{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--accent2)}
+.pay-info .pr{font-size:1.35rem;font-weight:700;color:var(--gold);margin:4px 0}
+.pay-info .tag{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.12);color:#4ade80;padding:3px 10px;border-radius:20px;font-size:.72rem;margin-top:4px}
+.upi-box{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:10px;padding:12px;text-align:center;margin-bottom:12px}
+.upi-box .lbl{font-size:.7rem;color:var(--muted);margin-bottom:4px}
+.upi-box .uid{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:700;color:var(--accent2);letter-spacing:.5px;cursor:pointer;user-select:all}
+.upi-box .copy-upi{font-size:.68rem;color:var(--gold);margin-top:4px;cursor:pointer}
+.qr{width:130px;height:130px;background:#1a1a24;border:2px dashed rgba(255,255,255,.1);border-radius:10px;margin:12px auto;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--muted);font-size:.7rem}
+.qr span{font-size:26px;margin-bottom:4px}
+.steps{background:rgba(0,0,0,.28);border-radius:8px;padding:10px;font-size:.72rem;color:var(--muted);margin-bottom:12px;text-align:left}
+.steps ol{padding-left:16px}
+.steps li{margin:3px 0}
+
+.success-box{text-align:center;padding:10px 0}
+.success-box .big{font-size:48px;margin-bottom:10px}
+.success-box h3{font-family:'Orbitron',sans-serif;font-size:1.2rem;color:var(--success);margin-bottom:8px}
+.success-box p{color:var(--muted);font-size:.82rem;line-height:1.5;margin-bottom:6px}
+
+.set-sec{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.set-sec:last-of-type{border:none}
+.set-sec h3{font-size:.74rem;color:var(--accent2);margin-bottom:8px;font-family:'Orbitron',sans-serif;letter-spacing:.5px}
+.scale-row{display:flex;align-items:center;gap:10px}
+.scale-row input[type=range]{flex:1;accent-color:var(--accent)}
+.scale-val{min-width:36px;text-align:center;font-weight:600;color:var(--gold);font-size:.82rem}
+.about{background:rgba(0,0,0,.28);border-radius:9px;padding:11px;font-size:.7rem;color:var(--muted);line-height:1.55}
+.about strong{color:#f87171}
+
+.toast{position:fixed;bottom:20px;right:20px;background:#1e1f22;border:1px solid #5865F2;border-radius:10px;padding:12px 14px;max-width:300px;z-index:2000;display:none;box-shadow:0 8px 28px rgba(0,0,0,.5);animation:inR .35s ease}
+.toast.show{display:block}
+@keyframes inR{from{transform:translateX(70px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast .th{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.toast .bn{font-weight:600;font-size:.76rem;color:#5865F2}
+.toast .tb{font-size:.7rem;color:#dcddde;line-height:1.5}
+.toast .tb strong{color:#fff}
+.toast .tf{margin-top:6px;font-size:.6rem;color:#72767d}
+
+@media(max-width:700px){
+  .navbar{padding:10px 14px}
+  .filter-bar{padding:12px 10px 6px}
+  .filter-btn{padding:8px 12px;font-size:.74rem}
+  .page{padding:0 12px 32px}
+  .hero{padding:32px 8px 24px}
+  .section{margin-top:36px}
+  .sec-head{flex-wrap:wrap;gap:10px}
+  .sec-badge{margin-left:0}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .coin-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .key-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .server-bar{padding:8px 12px;font-size:.78rem}
+}
+@media(max-width:400px){
+  .grid,.coin-grid,.key-grid{grid-template-columns:1fr}
+  .filter-btn .tag{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-anim" id="bgAnim"></div>
+<div class="bg-glow"></div>
+
+<div class="server-bar">
+  <div class="server-info">
+    <span class="online-dot"></span>
+    <span>play.hypecraft.fun</span>
+    <span>Port: 25575</span>
+  </div>
+  <button class="copy-btn" onclick="copyIP()">COPY IP</button>
+</div>
+
+<nav class="navbar">
+  <div class="logo">HYPE<span>craft</span></div>
+  <div class="nav-right">
+    <button class="icon-btn" onclick="openHistory()" title="Payment History">📋</button>
+    <button class="icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
+    <div class="signin-pill" id="signinPill" onclick="openSignIn()">
+      <div class="av" id="userAv">?</div>
+      <span class="txt" id="signinTxt">SIGN IN</span>
+    </div>
+    <a href="https://discord.gg/sifarish" target="_blank" class="discord-btn">DISCORD ↗</a>
+  </div>
+</nav>
+
+<div class="filter-bar">
+  <div class="filter-scroll">
+    <div class="filter-btn active" data-f="all" onclick="filterTo('all',this)">📦 All</div>
+    <div class="filter-btn" data-f="starter" onclick="filterTo('starter',this)">🛡️ Starter</div>
+    <div class="filter-btn" data-f="mid" onclick="filterTo('mid',this)">⚡ Mid <span class="tag hot">HOT</span></div>
+    <div class="filter-btn" data-f="premium" onclick="filterTo('premium',this)">💎 Premium</div>
+    <div class="filter-btn" data-f="legendary" onclick="filterTo('legendary',this)">💀 Legendary <span class="tag hot">HOT</span></div>
+    <div class="filter-btn" data-f="god" onclick="filterTo('god',this)">🌟 God <span class="tag ultra">ULTRA</span></div>
+    <div class="filter-btn" data-f="coins" onclick="filterTo('coins',this)">🪙 Coins</div>
+    <div class="filter-btn" data-f="keys" onclick="filterTo('keys',this)">🔑 Keys <span class="tag new">NEW</span></div>
+  </div>
+</div>
+
+<div class="page">
+  <section class="hero" id="home">
+    <p class="welcome">WELCOME TO THE HYPEcraft STORE</p>
+    <h1>HYPEcraft SMP<br><span>WEBSTORE</span></h1>
+    <p>Upgrade your gameplay. Unlock exclusive rewards.<br>Become the ultimate player.</p>
+    <div class="hero-btns">
+      <a href="#ranks" class="btn-main" onclick="filterTo('all')">EXPLORE STORE</a>
+      <a href="#support" class="btn-sec">GET SUPPORT</a>
+    </div>
+  </section>
+
+  <div id="ranks">
+    <section class="section starter" data-pack="starter">
+      <div class="sec-head starter"><div class="sec-icon">🛡️</div><div><h2>STARTER RANKS</h2><p>Perfect for new players</p></div><span class="sec-badge">Budget Friendly</span></div>
+      <div class="grid">
+        <div class="card elite"><div class="card-top">⚔️</div><div class="card-body"><h3>ELITE</h3><div class="price">₹99</div><div class="line"></div><ul><li>+youname</li><li>/pv2</li><li>/homeset 2</li></ul><button class="buy" onclick="buyItem('Rank','ELITE',99)">BUY NOW</button></div></div>
+        <div class="card noble"><div class="card-top">🏰</div><div class="card-body"><h3>NOBLE</h3><div class="price">₹149</div><div class="line"></div><ul><li>Access to NOBLE kit</li><li>/pv3</li><li>/sethome 3</li><li>/sit cmd</li></ul><button class="buy" onclick="buyItem('Rank','NOBLE',149)">BUY NOW</button></div></div>
+      </div>
+    </section>
+    <section class="section mid" data-pack="mid">
+      <div class="sec-head mid"><div class="sec-icon">⚡</div><div><h2>MID TIER RANKS</h2><p>Step up your game</p></div><span class="sec-badge">Popular</span></div>
+      <div class="grid">
+        <div class="card emperor"><div class="card-top">👑</div><div class="card-body"><h3>EMPEROR</h3><div class="price">₹199</div><div class="line"></div><ul><li>Access to EMPEROR kit</li><li>/pv4</li><li>/sethome 4</li><li>/sit, /spin cmd</li></ul><button class="buy" onclick="buyItem('Rank','EMPEROR',199)">BUY NOW</button></div></div>
+        <div class="card overlord"><div class="card-top">🔥</div><div class="card-body"><h3>OVERLORD</h3><div class="price">₹249</div><div class="line"></div><ul><li>Access to OVERLORD kit</li><li>/pv5</li><li>/sethome 5</li><li>Nightvision effect</li></ul><button class="buy" onclick="buyItem('Rank','OVERLORD',249)">BUY NOW</button></div></div>
+      </div>
+    </section>
+    <section class="section premium" data-pack="premium">
+      <div class="sec-head premium"><div class="sec-icon">💎</div><div><h2>PREMIUM RANKS</h2><p>Serious power</p></div><span class="sec-badge">High Value</span></div>
+      <div class="grid">
+        <div class="card divine"><div class="card-top">✨</div><div class="card-body"><h3>DIVINE</h3><div class="price">₹399</div><div class="line"></div><ul><li>Access to DIVINE kit</li><li>/pv6</li><li>/sethome 6</li><li>Nightvision</li><li>/ec enderchest</li></ul><button class="buy" onclick="buyItem('Rank','DIVINE',399)">BUY NOW</button></div></div>
+      </div>
+    </section>
+    <section class="section legendary" data-pack="legendary">
+      <div class="sec-head legendary"><div class="sec-icon">💀</div><div><h2>LEGENDARY RANK</h2><p>Dominate the server</p></div><span class="sec-badge">Dangerous</span></div>
+      <div class="grid">
+        <div class="card mafia"><div class="card-top">🕶️</div><div class="card-body"><h3>MAFIA</h3><div class="price">₹499</div><div class="line"></div><ul><li>Access to MAFIA kit</li><li>/pv7</li><li>/sethome 7</li><li>/ec, /anvil, /craft etc</li></ul><button class="buy" onclick="buyItem('Rank','MAFIA',499)">BUY NOW</button></div></div>
+      </div>
+    </section>
+    <section class="section god" data-pack="god">
+      <div class="sec-head god"><div class="sec-icon">🌟</div><div><h2>GOD TIER RANK</h2><p>Ultimate power</p></div><span class="sec-badge">ULTRA</span></div>
+      <div class="grid">
+        <div class="card eternal"><div class="card-top">♾️</div><div class="card-body"><h3>ETERNAL</h3><div class="price">₹599</div><div class="line"></div><ul><li>Access to ETERNAL kit</li><li>/pv10</li><li>/sethome +8</li><li>/fly, /ec, /anvil and more</li></ul><button class="buy" onclick="buyItem('Rank','ETERNAL',599)">BUY NOW</button></div></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="section" id="coins" data-pack="coins">
+    <div class="sec-head"><div class="sec-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)">🪙</div><div><h2>COINS STORE</h2><p>Get more coins and upgrade</p></div></div>
+    <div class="coin-grid">
+      <div class="coin"><div class="ic">🪙</div><h3>100 Coins</h3><div class="pr">₹19</div><button onclick="buyItem('Coins','100 Coins',19)">BUY NOW</button></div>
+      <div class="coin"><div class="ic">🪙</div><h3>250 Coins</h3><div class="pr">₹39</div><button onclick="buyItem('Coins','250 Coins',39)">BUY NOW</button></div>
+      <div class="coin hi"><div class="ic">💰</div><h3>500 Coins</h3><div class="pr">₹69</div><button onclick="buyItem('Coins','500 Coins',69)">BUY NOW</button></div>
+      <div class="coin hi"><div class="ic">💰</div><h3>1,000 Coins</h3><div class="pr">₹119</div><button onclick="buyItem('Coins','1,000 Coins',119)">BUY NOW</button></div>
+      <div class="coin hi"><div class="ic">💎</div><h3>2,500 Coins</h3><div class="pr">₹249</div><button onclick="buyItem('Coins','2,500 Coins',249)">BUY NOW</button></div>
+      <div class="coin ul"><div class="ic">👑</div><h3>5,000 Coins</h3><div class="pr">₹449</div><button onclick="buyItem('Coins','5,000 Coins',449)">BUY NOW</button></div>
+    </div>
+  </section>
+
+  <section class="section" id="keys" data-pack="keys">
+    <div class="sec-head"><div class="sec-icon" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🔑</div><div><h2>KEYS STORE</h2><p>Unlock powerful rewards</p></div></div>
+    <div class="key-grid">
+      <div class="key crimson"><div class="key-top">🔴</div><div class="key-body"><h3>CRIMSON KEY</h3><div class="price">₹19</div><p class="desc">Unlock Crimson Crate!</p><div class="key-rew"><h4>🎁 Rewards</h4><ul><li>Money Rewards</li><li>Diamond Items</li><li>Enchanted Armor</li><li>Spawner Rewards</li></ul></div><button class="key-buy" onclick="buyItem('Key','CRIMSON KEY',19)">BUY NOW</button></div></div>
+      <div class="key ice"><div class="key-top">❄️</div><div class="key-body"><h3>ICE KEY</h3><div class="price">₹29</div><p class="desc">Frozen treasures!</p><div class="key-rew"><h4>🎁 Rewards</h4><ul><li>Diamonds block</li><li>Rare Tools</li><li>Any mobs egg</li><li>Special Armor</li></ul></div><button class="key-buy" onclick="buyItem('Key','ICE KEY',29)">BUY NOW</button></div></div>
+      <div class="key golden"><div class="key-top">🟡</div><div class="key-body"><h3>GOLDEN KEY</h3><div class="price">₹39</div><p class="desc">Golden treasures!</p><div class="key-rew"><h4>🎁 Rewards</h4><ul><li>Netherite Blocks</li><li>Money Rewards</li><li>Enchanted Gear</li><li>Rare Items</li></ul></div><button class="key-buy" onclick="buyItem('Key','GOLDEN KEY',39)">BUY NOW</button></div></div>
+      <div class="key amethyst"><div class="key-top">💜</div><div class="key-body"><h3>AMETHYST KEY</h3><div class="price">₹69</div><p class="desc">Magical rewards!</p><div class="key-rew"><h4>🎁 Rewards</h4><ul><li>Rare Armor Sets</li><li>Spawner Rewards</li><li>Crate Keys</li><li>2 Villager Eggs</li></ul></div><button class="key-buy" onclick="buyItem('Key','AMETHYST KEY',69)">BUY NOW</button></div></div>
+      <div class="key dark"><div class="key-top">⚫</div><div class="key-body"><h3>DARK KEY</h3><div class="price">₹99</div><p class="desc">Legendary treasures!</p><div class="key-rew"><h4>🎁 Rewards</h4><ul><li>Legendary Armor</li><li>Powerful Weapons</li><li>Rank Rewards</li><li>5 Villager Eggs</li></ul></div><button class="key-buy" onclick="buyItem('Key','DARK KEY',99)">BUY NOW</button></div></div>
+    </div>
+  </section>
+
+  <section class="support" id="support">
+    <h2>NEED HELP?</h2>
+    <p>Contact our support team on Discord after payment.</p>
+    <a href="https://discord.gg/sifarish" target="_blank" class="btn-main">JOIN DISCORD</a>
+  </section>
+
+  <footer>
+    <p>© 2026 HYPECraft SMP. All Rights Reserved.</p>
+    <p class="disc"><strong>NOT AN OFFICIAL MINECRAFT PRODUCT.</strong> NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT. Minecraft is a trademark of Mojang Synergies AB. This is an independent fan-made store for a private SMP server.</p>
+  </footer>
+</div>
+
+<!-- SIGN IN -->
+<div class="overlay" id="signinModal">
+  <div class="modal">
+    <button class="x" onclick="closeM('signinModal')">×</button>
+    <h2>SIGN IN</h2>
+    <p class="sub">Required before purchase</p>
+    <div class="fg"><label>Minecraft Username *</label><input type="text" id="mcUsername" placeholder="e.g. Steve_2024" maxlength="16"></div>
+    <div class="fg"><label>Discord Username (optional)</label><input type="text" id="discordUsername" placeholder="e.g. player#1234"></div>
+    <button class="mbtn" onclick="doSignIn()">SIGN IN</button>
+    <button class="mbtn sec" onclick="closeM('signinModal')">CANCEL</button>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="overlay" id="paymentModal">
+  <div class="modal">
+    <button class="x" onclick="closeM('paymentModal')">×</button>
+    <div id="payStep">
+      <h2>PAY WITH UPI</h2>
+      <div class="pay-info">
+        <div class="nm" id="payItemName">ITEM</div>
+        <div class="pr" id="payItemPrice">₹0</div>
+        <div class="tag"><span>👤</span><span id="payUserName">—</span></div>
+      </div>
+      <div class="upi-box">
+        <div class="lbl">UPI ID</div>
+        <div class="uid" onclick="copyUPI()">7887463622@fam</div>
+        <div class="copy-upi" onclick="copyUPI()">📋 Tap to copy</div>
+      </div>
+      <div class="steps"><ol>
+        <li>Tap <strong>Pay with UPI App</strong> below</li>
+        <li>GPay / PhonePe / FamPay / any UPI app will open</li>
+        <li>Complete payment of exact amount</li>
+        <li>Then open Discord ticket + send screenshot for delivery</li>
+      </ol></div>
+      <button class="mbtn green" id="upiPayBtn" onclick="payWithUPI()">💳 PAY WITH UPI APP</button>
+      <button class="mbtn sec" onclick="copyUPI()">📋 COPY UPI ID</button>
+      <button class="mbtn sec" onclick="closeM('paymentModal')">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="overlay" id="historyModal">
+  <div class="modal" style="max-width:420px">
+    <button class="x" onclick="closeM('historyModal')">×</button>
+    <h2>📋 PAYMENT HISTORY</h2>
+    <p class="sub">Your past purchases on this device</p>
+    <div class="history-list" id="historyList"></div>
+    <button class="mbtn sec" onclick="closeM('historyModal')" style="margin-top:12px">CLOSE</button>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="overlay" id="settingsModal">
+  <div class="modal">
+    <button class="x" onclick="closeM('settingsModal')">×</button>
+    <h2>⚙️ SETTINGS</h2>
+    <p class="sub">Customize store</p>
+    <div class="set-sec">
+      <h3>🔍 PIXEL SCALE</h3>
+      <div class="scale-row"><input type="range" id="pixelScale" min="0.8" max="1.25" step="0.05" value="1" oninput="updateScale(this.value)"><span class="scale-val" id="scaleVal">100%</span></div>
+    </div>
+    <div class="set-sec">
+      <h3>ℹ️ ABOUT</h3>
+      <div class="about"><strong>NOT AN OFFICIAL MINECRAFT PRODUCT.</strong><br>Independent fan-made webstore for HYPECraft SMP. Not associated with Mojang or Microsoft.<br><br>Minecraft® is a trademark of Mojang Synergies AB.<br>© 2026 HYPECraft SMP. All Rights Reserved.</div>
+    </div>
+    <button class="mbtn sec" onclick="closeM('settingsModal')">CLOSE</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="th"><div style="width:22px;height:22px;background:#5865F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px">🤖</div><div class="bn">HYPECraft Store Bot</div></div>
+  <div class="tb" id="toastBody"></div>
+  <div class="tf">Demo Discord notification</div>
+</div>
+
+<script>
+(function(){var c=document.getElementById('bgAnim');for(var i=0;i<40;i++){var s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.width=s.style.height=(Math.random()*2+1)+'px';s.style.animationDuration=(8+Math.random()*12)+'s';s.style.animationDelay=Math.random()*10+'s';c.appendChild(s)}})();
+
+var currentUser=null,pendingItem=null,pendingAfter=null;
+var UPI='7887463622@fam';
+
+window.addEventListener('DOMContentLoaded',function(){
+  var s=localStorage.getItem('hypecraft_user');
+  if(s){currentUser=JSON.parse(s);updateUI()}
+  var sc=localStorage.getItem('hypecraft_scale');
+  if(sc){document.documentElement.style.setProperty('--pixel-scale',sc);document.getElementById('pixelScale').value=sc;document.getElementById('scaleVal').textContent=Math.round(sc*100)+'%'}
+});
+
+function closeM(id){document.getElementById(id).classList.remove('show')}
+function openM(id){document.getElementById(id).classList.add('show')}
+
+function filterTo(f,el){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+  if(el)el.classList.add('active');else{var b=document.querySelector('.filter-btn[data-f="'+f+'"]');if(b)b.classList.add('active')}
+  document.querySelectorAll('.section[data-pack]').forEach(function(p){
+    var pack=p.getAttribute('data-pack');
+    if(f==='all')p.classList.remove('hidden');else p.classList.toggle('hidden',pack!==f);
+  });
+  if(f!=='all'){var t=document.querySelector('.section[data-pack="'+f+'"]');if(t)setTimeout(function(){t.scrollIntoView({behavior:'smooth',block:'start'})},50)}
+}
+
+function copyIP(){
+  navigator.clipboard.writeText('play.hypecraft.fun:25575').then(function(){
+    var b=document.querySelector('.copy-btn');b.textContent='COPIED!';setTimeout(function(){b.textContent='COPY IP'},1400);
+  });
+}
+function copyUPI(){
+  navigator.clipboard.writeText(UPI).then(function(){
+    var el=document.querySelector('.copy-upi');if(el){el.textContent='✓ Copied!';setTimeout(function(){el.textContent='📋 Tap to copy UPI'},1400)}
+  });
+}
+
+function openSignIn(){
+  openM('signinModal');
+  if(currentUser){document.getElementById('mcUsername').value=currentUser.mc||'';document.getElementById('discordUsername').value=currentUser.discord||''}
+}
+function doSignIn(){
+  var mc=document.getElementById('mcUsername').value.trim();
+  var d=document.getElementById('discordUsername').value.trim();
+  if(!mc){alert('Minecraft Username required!');return}
+  currentUser={mc:mc,discord:d||'Not provided',signedAt:new Date().toISOString()};
+  localStorage.setItem('hypecraft_user',JSON.stringify(currentUser));
+  updateUI();closeM('signinModal');
+  if(pendingAfter){var t=pendingAfter;pendingAfter=null;setTimeout(function(){buyItem(t.type,t.name,t.price)},200)}
+}
+function updateUI(){
+  if(!currentUser)return;
+  document.getElementById('signinPill').classList.add('logged');
+  document.getElementById('userAv').textContent=currentUser.mc.charAt(0).toUpperCase();
+  document.getElementById('signinTxt').textContent=currentUser.mc;
+}
+
+function buyItem(type,name,price){
+  if(!currentUser){pendingAfter={type:type,name:name,price:price};openSignIn();return}
+  pendingItem={type:type,name:name,price:price};
+  document.getElementById('payItemName').textContent=type+': '+name;
+  document.getElementById('payItemPrice').textContent='₹'+price;
+  document.getElementById('payUserName').textContent=currentUser.mc;
+  openM('paymentModal');
+}
+
+function payWithUPI(){
+  if(!pendingItem||!currentUser)return;
+  var am=pendingItem.price;
+  var tn=encodeURIComponent(pendingItem.type+' '+pendingItem.name+' for '+currentUser.mc);
+  var pn=encodeURIComponent('HYPECraft SMP');
+  // Official UPI intent — opens GPay / PhonePe / FamPay / etc.
+  var url='upi://pay?pa='+encodeURIComponent(UPI)+'&pn='+pn+'&am='+am+'&cu=INR&tn='+tn;
+  // Save pending order to history as "Awaiting verification"
+  var order={
+    id:Date.now(),
+    type:pendingItem.type,
+    name:pendingItem.name,
+    price:pendingItem.price,
+    user:currentUser.mc,
+    discord:currentUser.discord,
+    time:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}),
+    status:'Awaiting verification'
+  };
+  var hist=JSON.parse(localStorage.getItem('hypecraft_history')||'[]');
+  hist.unshift(order);
+  localStorage.setItem('hypecraft_history',JSON.stringify(hist));
+
+  var html='<strong>🛒 Payment Started</strong><br><br>';
+  html+='<strong>👤 MC:</strong> '+currentUser.mc+'<br>';
+  html+='<strong>💬 Discord:</strong> '+currentUser.discord+'<br>';
+  html+='<strong>📦 Item:</strong> '+pendingItem.type+': '+pendingItem.name+'<br>';
+  html+='<strong>💰 Amount:</strong> ₹'+pendingItem.price+'<br>';
+  html+='<strong>🕒 Time:</strong> '+order.time;
+  document.getElementById('toastBody').innerHTML=html;
+  var t=document.getElementById('toast');t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},6000);
+
+  // Open UPI app
+  window.location.href=url;
+  // Fallback note after a moment if still on page
+  setTimeout(function(){
+    alert('If UPI app did not open, copy UPI ID 7887463622@fam and pay manually in GPay / PhonePe / FamPay.\n\nAfter payment, open Discord ticket with screenshot.');
+  },1500);
+}
+
+function openHistory(){
+  var hist=JSON.parse(localStorage.getItem('hypecraft_history')||'[]');
+  var box=document.getElementById('historyList');
+  if(!hist.length){box.innerHTML='<div class="hist-empty">No payments yet.</div>'}
+  else{
+    box.innerHTML=hist.map(function(h){
+      var stColor=h.status==='Paid'?'#22c55e':'#fbbf24';return '<div class="hist-item"><div class="left"><h4>'+h.type+': '+h.name+'</h4><p>'+h.user+' · '+h.time+'</p></div><div class="right"><div class="amt">₹'+h.price+'</div><div class="st" style="color:'+stColor+'">'+h.status+'</div></div></div>';
+    }).join('');
+  }
+  openM('historyModal');
+}
+
+function openSettings(){openM('settingsModal')}
+function updateScale(v){document.documentElement.style.setProperty('--pixel-scale',v);document.getElementById('scaleVal').textContent=Math.round(v*100)+'%';localStorage.setItem('hypecraft_scale',v)}
+
+document.querySelectorAll('.overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show')})});
+</script>
+</body>
+</html>
